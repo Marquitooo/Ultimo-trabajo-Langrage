@@ -1,0 +1,43 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Nov 19 10:13:12 2021
+
+@author: Marco Ramirez Lopez
+"""
+import matplotlib.pyplot as plt
+import math as mt
+import numpy as np
+
+
+Entero=int(5/.001)
+
+def normal_den(x):
+    return (1/mt.sqrt(2*mt.pi))*mt.exp(-0.5*mt.pow(x,2))
+
+def lagrange(x, y , x_at):
+    px=sum([j * lagrange_basis(x, i, x_at) for i,j in enumerate(y)])
+    return px
+
+def lagrange_basis(x, y, x_at):
+    res =np.prod([(x_at-j)/(x[y]-j) if y!=i else 1 for i,j in enumerate(x)])
+    return res
+
+
+grid_x =[-4+.001*i for i in range(Entero+1)]
+
+f_x=[normal_den(i) for i in grid_x]
+
+punto_m=[i+.001/2 for i in grid_x]
+area=0
+
+for i in range(len(grid_x)-1):
+    Coordenada_y=[normal_den(grid_x[i]),normal_den(punto_m[i]),normal_den(grid_x[i+1])]
+    Coordenada_x=[grid_x[i],punto_m[i],grid_x[i+1]]
+    grid=[grid_x[i]+j*(.001/10) for j in range(10)]
+    y_eval=[lagrange(Coordenada_x,Coordenada_y,k) for k in grid]
+    area+=sum(y_eval)*(.001/10)
+    
+    
+print(area)
+plt.plot(Coordenada_x,Coordenada_y)
+plt.show()
